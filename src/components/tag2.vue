@@ -31,9 +31,9 @@ const props = defineProps({
   },
 })
 
-const canvasWidth = 320
-const canvasHeight = 190
-const leftOffset = 20
+const canvasWidth = 300
+const canvasHeight = 100
+const leftOffset = 2
 let topOffset = 3
 
 const tagCanvas = ref<HTMLCanvasElement>()
@@ -68,66 +68,15 @@ const drawtagDetails = (
   return new Promise((resolve, reject) => {
     //信息绘制
     ctx.fillStyle = 'rgba(0, 0, 0)'
-    ctx.font = ' 22px SimHei'
-
-    // 资产标识卡
-    const titleWidth = getTextWidth(ctx, '资产标识卡')
-    ctx.fillText('资产标识卡', (canvasWidth - titleWidth) / 2, 28)
-
-    ctx.font = ' 18px SimSun'
-    // 资产名称和序列号
-    ctx.fillText('资产名称：' + props.tagInfo.name, leftOffset, topOffset + 50)
-    ctx.fillText(
-      '序 列 号：' + props.tagInfo.serialNumber,
-      leftOffset,
-      topOffset + 75,
-    )
-
-    if (props.tagInfo.customized) {
-      ctx.fillText(props.tagInfo.customized, leftOffset, topOffset + 100)
-      var customTextHeight = 25
-    }
-    else {
-      var customTextHeight = 0
-    }
+    ctx.font = ' 32px SimSun'
 
     // 保管人和电话
-    ctx.fillText('所属人员：' + props.tagInfo.custodian, leftOffset, topOffset + customTextHeight + 100)
-    ctx.fillText('联系电话：' + props.tagInfo.phoneNumber, leftOffset, topOffset + customTextHeight + 125)
+    const custodianWidth = getTextWidth(ctx, props.tagInfo.custodian)
+    ctx.fillText(props.tagInfo.custodian, leftOffset + ( canvasWidth - custodianWidth ) / 2, topOffset + 38)
+    ctx.font = ' 32px SimHei'
+    const phoneNumberWidth = getTextWidth(ctx, props.tagInfo.phoneNumber)
+    ctx.fillText(props.tagInfo.phoneNumber, leftOffset + ( canvasWidth - phoneNumberWidth ) / 2, topOffset + 78)
     
-    // 日期
-    ctx.fillText(props.tagInfo.date, leftOffset, topOffset + (customTextHeight / 2) + 162)
-
-    if (props.tagInfo.displayQR) {
-      // 二维码
-      const qrCodeText = props.tagInfo.qrCodeId
-      const qrCodeWidth = 75
-      const qrCodeOptions = {
-        width: qrCodeWidth,
-        maskPattern: 3,
-        margin: 0,
-        color: {
-          dark: '#000000b0', // 二维码颜色
-          light: '#FFFFFF00', // 背景透明
-        },
-      }
-      QRCode.toDataURL(qrCodeText, qrCodeOptions as any, (err, url) => {
-        if (err) return reject(err)
-        const qrImage = new Image()
-        qrImage.src = url
-        qrImage.onload = () => {
-          ctx.drawImage(
-            qrImage,
-            leftOffset + 212,
-            topOffset + 100,
-            qrCodeWidth,
-            qrCodeWidth,
-          )
-          resolve()
-        }
-        qrImage.onerror = reject
-      })
-    }
   })
 }
 
@@ -149,7 +98,7 @@ function saveCanvas() {
 
   const el = document.createElement('a');
   el.href = canvas.toDataURL();
-  el.download = props.tagInfo.name + '.png';
+  el.download = props.tagInfo.custodian + '.png';
   el.click()
 }
 

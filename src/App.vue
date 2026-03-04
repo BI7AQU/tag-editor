@@ -9,9 +9,11 @@ import InfoHead from '@/components/common/InfoHead.vue'
 import Footer from '@/components/common/Footer.vue'
 
 import tag1 from '@/components/tag1.vue'
+import tag2 from '@/components/tag2.vue'
 
 const tabs = ref([
-  { label: '标签1', key: 'tag1' },
+  { label: '32x19 mm', key: 'tag1' },
+  { label: '30x10 mm', key: 'tag2' },
 ])
 
 const activeTab = ref('')
@@ -38,7 +40,6 @@ const tagInfo = ref<tagData>({
   displayQR: true,
 })
 
-
 </script>
 
 <template>
@@ -53,6 +54,7 @@ const tagInfo = ref<tagData>({
       <div>
         <div class="tag-container py-4">
           <tag1 :tagInfo="tagInfo" v-if="activeTab == 'tag1'" />
+          <tag2 :tagInfo="tagInfo" v-if="activeTab == 'tag2'" />
           <template v-else-if="activeTab == ''">
             <h2 class="text-2xl">请选择标签类型！</h2>
           </template>
